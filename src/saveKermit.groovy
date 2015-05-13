@@ -45,12 +45,25 @@ def saveKermit(street) {
 
 
 def kermitUrl(secrets, street) {
+    def decryptedSecrets = decrypt(secrets)
+    def buildings = buildingsOnStreet(decryptedSecrets, street)
+    def theBuilding = tallestBuilding(buildings)
+    theBuilding.url
+}
+
+def decrypt(secrets) {
     secrets.collect { secret ->
         secret.street = secret.street.reverse()
         secret
-    }.
-    findAll { it.street == street}.
-    max { it.floors }.
-    url
+    }
+    secrets
+}
+
+def buildingsOnStreet(buildings, street) {
+    buildings.findAll { it.street == street}
+}
+
+def tallestBuilding(buildings) {
+    buildings.max { it.floors }
 }
 
