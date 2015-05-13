@@ -14,7 +14,6 @@ def hint() {
     http.request( GET, TEXT ) { req ->
         uri.path = '/hint'
         headers.'User-Agent' = "Mozilla/5.0 Firefox/3.0.4"
-        headers.Accept = 'application/json'
 
         response.success = { resp, reader ->
             hint = reader.text
