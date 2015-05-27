@@ -1,13 +1,14 @@
 import groovy.json.JsonSlurper
+
 @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
 import groovyx.net.http.*
 import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.GET
 
-http = new HTTPBuilder('http://localhost:8080')
+import java.awt.Desktop
+import java.net.URI
 
-hint = hint()
-saveKermit hint
+http = new HTTPBuilder('http://localhost:8080')
 
 def hint() {
     def hint
@@ -23,6 +24,7 @@ def hint() {
 }
 
 def saveKermit(street) {
+    def url
     http.request( GET, TEXT ) { req ->
         uri.path = '/whereIsKermit'
         headers.'User-Agent' = "Mozilla/5.0 Firefox/3.0.4"
@@ -32,13 +34,14 @@ def saveKermit(street) {
             def result = reader.text
 
             def secrets = new JsonSlurper().parseText(result).secrets
-            def url = kermitUrl(secrets, street)
+            url = kermitUrl(secrets, street)
             println "You can see Kermit here: $url"
         }
         response.'404' = {
             println 'Not found'
         }
     }
+    url
 }
 
 
@@ -65,4 +68,9 @@ def buildingsOnStreet(buildings, street) {
 def tallestBuilding(buildings) {
     buildings.max { it.floors }
 }
+
+// the script
+def hint = hint()
+def url = saveKermit(hint)
+Desktop.getDesktop().browse(new URI(url))
 
