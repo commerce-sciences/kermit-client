@@ -24,51 +24,8 @@ def hint() {
 }
 
 def saveKermit(street) {
-    def url
-    http.request( GET, TEXT ) { req ->
-        uri.path = '/whereIsKermit'
-        headers.'User-Agent' = "Mozilla/5.0 Firefox/3.0.4"
-        headers.Accept = 'application/json'
 
-        response.success = { resp, reader ->
-            def result = reader.text
-
-            def secrets = new JsonSlurper().parseText(result).secrets
-            url = kermitUrl(secrets, street)
-            println "You can see Kermit here: $url"
-        }
-        response.'404' = {
-            println 'Not found'
-        }
-    }
-    url
 }
-
-
-
-def kermitUrl(secrets, street) {
-    def decryptedSecrets = decrypt(secrets)
-    def buildings = buildingsOnStreet(decryptedSecrets, street)
-    def theBuilding = tallestBuilding(buildings)
-    theBuilding.url
-}
-
-def decrypt(secrets) {
-    secrets.collect { secret ->
-        secret.street = secret.street.reverse()
-        secret
-    }
-    secrets
-}
-
-def buildingsOnStreet(buildings, street) {
-    buildings.findAll { it.street == street}
-}
-
-def tallestBuilding(buildings) {
-    buildings.max { it.floors }
-}
-
 // the script
 def hint = hint()
 def url = saveKermit(hint)
